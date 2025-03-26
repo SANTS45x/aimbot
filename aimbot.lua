@@ -7,9 +7,10 @@ local Mouse = LocalPlayer:GetMouse()
 
 local aimbotActive = false
 local KeybindAimbot = Enum.KeyCode.F -- Tecla padrão para ativar/desativar o aimbot
-local KeybindToggleMenu = Enum.KeyCode.M -- Tecla para abrir/fechar o menu
+local KeybindToggleMenu = Enum.KeyCode.Insert -- Tecla para minimizar/maximizar o menu
 local targetPart = "Head" -- Parte do corpo para mirar (Head, HumanoidRootPart, etc.)
 local menuOpen = true -- Estado do menu
+local lockedTarget = nil -- Alvo fixo do aimbot
 
 -- Função para encontrar o inimigo mais próximo da mira
 local function getClosestEnemy()
@@ -37,19 +38,21 @@ end
 -- Função para ativar/desativar o aimbot
 local function toggleAimbot(value)
     aimbotActive = value
+    if value then
+        lockedTarget = getClosestEnemy()
+    else
+        lockedTarget = nil
+    end
 end
 
 -- Função para mover a mira suavemente para o alvo
 local function updateAimbotTarget()
-    if aimbotActive then
-        local target = getClosestEnemy()
-        if target then
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
-        end
+    if aimbotActive and lockedTarget then
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, lockedTarget.Position)
     end
 end
 
--- Função para abrir/fechar o menu
+-- Função para minimizar/maximizar o menu
 local function toggleMenu()
     menuOpen = not menuOpen
     if menuOpen then
@@ -62,7 +65,7 @@ end
 -- GUI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 library.rank = "developer"
-local Wm = library:Watermark("Silent | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
+local Wm = library:Watermark("Silent Aimbot | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
 local FpsWm = Wm:AddWatermark("fps: " .. library.fps)
 
 coroutine.wrap(function()
@@ -72,8 +75,8 @@ coroutine.wrap(function()
 end)()
 
 local Notif = library:InitNotifications()
-local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information") 
-library.title = "Silent"
+local LoadingXSX = Notif:Notify("Loading Silent Client.", 5, "information") 
+library.title = "Silent Client"
 library:Introduction()
 
 wait(1)
@@ -102,6 +105,15 @@ local Selector1 = Tab1:NewSelector("Parte do Corpo", "Head", {"Head", "HumanoidR
     targetPart = part
 end)
 
+-- Aba "SETTINGS"
+local Tab2 = Init:NewTab("SETTINGS")
+local Section2 = Tab2:NewSection("Misc Settings")
+
+-- Botão para executar animação Zombie
+local ButtonZombie = Tab2:NewButton("Zombie Animation", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/SANTS45x/animation/refs/heads/main/animatio.lua"))()
+end)
+
 -- Monitorando teclas para ativar/desativar
 local function onKeyPress(input)
     if input.UserInputType == Enum.UserInputType.Keyboard then
@@ -118,4 +130,4 @@ UserInputService.InputBegan:Connect(onKeyPress)
 -- Atualiza o aimbot
 RunService.RenderStepped:Connect(updateAimbotTarget)
 
-local FinishedLoading = Notif:Notify("Aimbot Loaded", 4, "success")
+local FinishedLoading = Notif:Notify("Silent Client Loaded", 4, "success")
