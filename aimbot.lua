@@ -62,7 +62,7 @@ end
 -- GUI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 library.rank = "developer"
-local Wm = library:Watermark("Aimbot | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
+local Wm = library:Watermark("Silent | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
 local FpsWm = Wm:AddWatermark("fps: " .. library.fps)
 
 coroutine.wrap(function()
@@ -73,7 +73,7 @@ end)()
 
 local Notif = library:InitNotifications()
 local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information") 
-library.title = "Aimbot"
+library.title = "Silent"
 library:Introduction()
 
 wait(1)
