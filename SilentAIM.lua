@@ -79,7 +79,7 @@ end
 -- GUI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 library.rank = "developer"
-local Wm = library:Watermark("Aimbot | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
+local Wm = library:Watermark("Silent Aim | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
 local FpsWm = Wm:AddWatermark("fps: " .. library.fps)
 
 coroutine.wrap(function()
@@ -89,8 +89,8 @@ coroutine.wrap(function()
 end)()
 
 local Notif = library:InitNotifications()
-local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information") 
-library.title = "Aimbot"
+local LoadingXSX = Notif:Notify("Loading Silent Aim.", 5, "information") 
+library.title = "Silent Aim"
 library:Introduction()
 
 wait(1)
@@ -158,4 +158,4 @@ UserInputService.InputBegan:Connect(onKeyPress)
 -- Atualiza o aimbot
 RunService.RenderStepped:Connect(updateAimbotTarget)
 
-local FinishedLoading = Notif:Notify("Aimbot Loaded", 4, "success")
+local FinishedLoading = Notif:Notify("Silent Aim Loaded", 4, "success")
