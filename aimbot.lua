@@ -124,14 +124,30 @@ local Selector1 = Tab1:NewSelector("Parte do Corpo", "Head", {"Head", "HumanoidR
     targetPart = part
 end)
 
--- Adicionando a opção de Prediction
+local predictionValue = 0.1 -- Valor padrão ajustado para predição
+
+local function updateAimbotTarget()
+    if aimbotActive and lockedTarget then
+        local targetPos = lockedTarget.Position
+        local targetVelocity = lockedTarget.Velocity
+        
+        -- Aplicando a predição ao movimento do alvo
+        if targetVelocity.Magnitude > 0 then
+            targetPos = targetPos + (targetVelocity * predictionValue)
+        end
+        
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPos)
+    end
+end
+
+-- Atualizando a caixa de texto de predição na GUI
 local TextboxPrediction = Tab1:NewTextbox("Prediction", tostring(predictionValue), "Digite a predição (número)", "all", "medium", true, false, function(val)
     local prediction = tonumber(val)
     if prediction then
         predictionValue = prediction
         TextboxPrediction:SetText(tostring(predictionValue))
     end
-end)
+end
 
 -- Aba "SETTINGS"
 local Tab2 = Init:NewTab("SETTINGS")
