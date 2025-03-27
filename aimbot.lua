@@ -133,6 +133,10 @@ local TextboxPrediction = Tab1:NewTextbox("Prediction", tostring(predictionValue
     end
 end)
 
+-- Aba "SILENT AIM"
+local TabSilentAim = Init:NewTab("SILENT AIM")
+local SectionSilentAim = TabSilentAim:NewSection("Silent Aim Settings")
+
 -- Aba "SETTINGS"
 local Tab2 = Init:NewTab("SETTINGS")
 local Section2 = Tab2:NewSection("Misc Settings")
