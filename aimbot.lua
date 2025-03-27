@@ -6,18 +6,17 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
 local aimbotActive = false
-local silentAimActive = false  -- Estado do silent aim
-local visibleCheck = false  -- Novo toggle para verificar visibilidade
-local KeybindAimbot = Enum.KeyCode.F -- Tecla padrão para ativar/desativar o aimbot
-local KeybindToggleMenu = Enum.KeyCode.Insert -- Tecla para abrir/fechar o menu
-local targetPart = "Head" -- Parte do corpo para mirar (Head, HumanoidRootPart, etc.)
-local menuOpen = true -- Estado do menu
-local lockedTarget = nil -- Alvo fixo do aimbot
-local predictionValue = 0 -- Valor de predição (novo)
-local fovSize = 60 -- Tamanho do FOV
-local showFov = false -- Toggle para mostrar o FOV
+local silentAimActive = false
+local visibleCheck = false
+local KeybindAimbot = Enum.KeyCode.F
+local KeybindToggleMenu = Enum.KeyCode.Insert
+local targetPart = "Head"
+local menuOpen = true
+local lockedTarget = nil
+local predictionValue = 0
+local fovSize = 50 -- Tamanho do FOV
+local showFov = false -- Mostrar FOV do silent aim
 
--- Função para verificar se um alvo está visível
 local function isTargetVisible(target)
     local origin = Camera.CFrame.Position
     local direction = (target.Position - origin).unit * (target.Position - origin).magnitude
@@ -26,7 +25,6 @@ local function isTargetVisible(target)
     return hit and hit:IsDescendantOf(target.Parent)
 end
 
--- Função para encontrar o inimigo mais próximo da mira
 local function getClosestEnemy()
     local closestEnemy = nil
     local shortestDistance = math.huge
@@ -49,7 +47,6 @@ local function getClosestEnemy()
     return closestEnemy
 end
 
--- Função para ativar/desativar o aimbot
 local function toggleAimbot(value)
     aimbotActive = value
     if value then
@@ -59,25 +56,18 @@ local function toggleAimbot(value)
     end
 end
 
--- Função para ativar/desativar o silent aim
 local function toggleSilentAim(value)
     silentAimActive = value
-    if not value then
-        lockedTarget = nil
-    end
 end
 
--- Função para mover a mira suavemente para o alvo
 local function updateAimbotTarget()
     if aimbotActive and lockedTarget then
         local targetPos = lockedTarget.Position
-        -- Aplicando a predição ao movimento do alvo
-        targetPos = targetPos + (lockedTarget.Velocity * predictionValue) -- Predição
+        targetPos = targetPos + (lockedTarget.Velocity * predictionValue)
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPos)
     end
 end
 
--- Função para abrir/fechar o menu
 local function toggleMenu()
     menuOpen = not menuOpen
     if menuOpen then
@@ -87,7 +77,6 @@ local function toggleMenu()
     end
 end
 
--- GUI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 library.rank = "developer"
 local Wm = library:Watermark("Aimbot | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
@@ -100,7 +89,7 @@ coroutine.wrap(function()
 end)()
 
 local Notif = library:InitNotifications()
-local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information") 
+local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information")
 library.title = "Aimbot"
 library:Introduction()
 
@@ -111,17 +100,14 @@ local Init = library:Init()
 local Tab1 = Init:NewTab("AIMBOT")
 local Section1 = Tab1:NewSection("Aimbot Settings")
 
--- Toggle para ativar/desativar o aimbot
 local Toggle1 = Tab1:NewToggle("Aimbot Toggle", false, function(value)
     toggleAimbot(value)
 end)
 
--- Toggle para verificar visibilidade
 local ToggleVisible = Tab1:NewToggle("Visible Check", false, function(value)
     visibleCheck = value
 end)
 
--- Opção para configurar a tecla do keybind
 local TextboxKeybind = Tab1:NewTextbox("Keybind para Aimbot", tostring(KeybindAimbot), "Digite a tecla", "all", "medium", true, false, function(val)
     local key = Enum.KeyCode[val:upper()]
     if key then
@@ -130,12 +116,10 @@ local TextboxKeybind = Tab1:NewTextbox("Keybind para Aimbot", tostring(KeybindAi
     end
 end)
 
--- Seletor para escolher a parte do corpo a ser mirado
 local Selector1 = Tab1:NewSelector("Parte do Corpo", "Head", {"Head", "HumanoidRootPart", "Any"}, function(part)
     targetPart = part
 end)
 
--- Adicionando a opção de Prediction
 local TextboxPrediction = Tab1:NewTextbox("Prediction", tostring(predictionValue), "Digite a predição (número)", "all", "medium", true, false, function(val)
     local prediction = tonumber(val)
     if prediction then
@@ -145,45 +129,27 @@ local TextboxPrediction = Tab1:NewTextbox("Prediction", tostring(predictionValue
 end)
 
 -- Aba "SILENT AIM"
-local Tab3 = Init:NewTab("SILENT AIM")
-local Section3 = Tab3:NewSection("Silent Aim Settings")
+local TabSilentAim = Init:NewTab("SILENT AIM")
+local SectionSilentAim = TabSilentAim:NewSection("Silent Aim Settings")
 
--- Toggle para ativar/desativar o silent aim
-local ToggleSilentAim = Tab3:NewToggle("Silent Aim Toggle", false, function(value)
+-- Toggle para ativar/desativar o Silent Aim
+local ToggleSilentAim = TabSilentAim:NewToggle("Silent Aim Toggle", false, function(value)
     toggleSilentAim(value)
 end)
 
 -- Slide para modificar o tamanho do FOV
-local SliderFov = Tab3:NewSlider("Fov Size", 0, 180, fovSize, true, function(value)
+local SliderFovSize = TabSilentAim:NewSlider("FOV Size", 50, 200, fovSize, function(value)
     fovSize = value
 end)
 
 -- Toggle para mostrar o FOV
-local ToggleShowFov = Tab3:NewToggle("Mostrar Fov", false, function(value)
+local ToggleShowFov = TabSilentAim:NewToggle("Mostrar FOV", false, function(value)
     showFov = value
 end)
 
 -- Seletor para escolher a parte do corpo a ser mirado
-local SelectorSilentAim = Tab3:NewSelector("Parte do Corpo", "Head", {"Head", "HumanoidRootPart", "Any"}, function(part)
+local SelectorSilentAim = TabSilentAim:NewSelector("Parte do Corpo", "Head", {"Head", "HumanoidRootPart", "Any"}, function(part)
     targetPart = part
-end)
-
--- Adicionando a opção de Prediction
-local TextboxSilentPrediction = Tab3:NewTextbox("Prediction", tostring(predictionValue), "Digite a predição (número)", "all", "medium", true, false, function(val)
-    local prediction = tonumber(val)
-    if prediction then
-        predictionValue = prediction
-        TextboxSilentPrediction:SetText(tostring(predictionValue))
-    end
-end)
-
--- Aba "SETTINGS"
-local Tab2 = Init:NewTab("SETTINGS")
-local Section2 = Tab2:NewSection("Misc Settings")
-
--- Botão para executar animação Zombie
-local ButtonZombie = Tab2:NewButton("Zombie Animation", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/SANTS45x/animation/refs/heads/main/animatio.lua"))()
 end)
 
 -- Monitorando teclas para ativar/desativar
