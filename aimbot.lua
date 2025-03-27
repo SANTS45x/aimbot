@@ -13,6 +13,7 @@ local targetPart = "Head" -- Parte do corpo para mirar (Head, HumanoidRootPart, 
 local menuOpen = true -- Estado do menu
 local lockedTarget = nil -- Alvo fixo do aimbot
 local predictionValue = 0 -- Valor de predição (novo)
+
 local spinbotActive = false -- Variável para o spinbot
 local spinbotSpeed = 10 -- Velocidade do spinbot
 local bunnyhopActive = false -- Variável para o bunnyhop
@@ -80,7 +81,7 @@ local function toggleBunnyhop(value)
     bunnyhopActive = value
 end
 
--- Função para mover o personagem com o spinbot
+-- Função para fazer o personagem girar com o spinbot
 local function updateSpinbot()
     if spinbotActive then
         LocalPlayer.Character:SetPrimaryPartCFrame(LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(spinbotSpeed), 0))
