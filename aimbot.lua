@@ -13,6 +13,10 @@ local targetPart = "Head" -- Parte do corpo para mirar (Head, HumanoidRootPart, 
 local menuOpen = true -- Estado do menu
 local lockedTarget = nil -- Alvo fixo do aimbot
 local predictionValue = 0 -- Valor de predição (novo)
+local spinbotActive = false -- Variável para o spinbot
+local spinbotSpeed = 10 -- Velocidade do spinbot
+local bunnyhopActive = false -- Variável para o bunnyhop
+local bunnyhopSpeed = 50 -- Velocidade do bunnyhop
 
 -- Função para verificar se um alvo está visível
 local function isTargetVisible(target)
@@ -66,6 +70,33 @@ local function updateAimbotTarget()
     end
 end
 
+-- Função para ativar/desativar o spinbot
+local function toggleSpinbot(value)
+    spinbotActive = value
+end
+
+-- Função para ativar/desativar o bunnyhop
+local function toggleBunnyhop(value)
+    bunnyhopActive = value
+end
+
+-- Função para mover o personagem com o spinbot
+local function updateSpinbot()
+    if spinbotActive then
+        LocalPlayer.Character:SetPrimaryPartCFrame(LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(spinbotSpeed), 0))
+    end
+end
+
+-- Função para fazer o personagem realizar o bunnyhop
+local function updateBunnyhop()
+    if bunnyhopActive then
+        local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Physics then
+            humanoid:Move(Vector3.new(0, bunnyhopSpeed, 0))
+        end
+    end
+end
+
 -- Função para abrir/fechar o menu
 local function toggleMenu()
     menuOpen = not menuOpen
@@ -79,7 +110,7 @@ end
 -- GUI
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 library.rank = "developer"
-local Wm = library:Watermark("Aimbot | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
+local Wm = library:Watermark("Silent Aim | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
 local FpsWm = Wm:AddWatermark("fps: " .. library.fps)
 
 coroutine.wrap(function()
@@ -89,8 +120,8 @@ coroutine.wrap(function()
 end)()
 
 local Notif = library:InitNotifications()
-local LoadingXSX = Notif:Notify("Loading Aimbot.", 5, "information") 
-library.title = "Aimbot"
+local LoadingXSX = Notif:Notify("Loading Silent Aim.", 5, "information") 
+library.title = "Silent Aim"
 library:Introduction()
 
 wait(1)
@@ -142,6 +173,48 @@ local ButtonZombie = Tab2:NewButton("Zombie Animation", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/SANTS45x/animation/refs/heads/main/animatio.lua"))()
 end)
 
+-- Aba "RAGE"
+local Tab3 = Init:NewTab("RAGE")
+local Section3 = Tab3:NewSection("Rage Settings")
+
+-- Toggle para spinbot
+local ToggleSpinbot = Tab3:NewToggle("Spinbot", false, function(value)
+    toggleSpinbot(value)
+end)
+
+-- Keybind para ativar/desativar o spinbot
+local TextboxSpinbotKeybind = Tab3:NewTextbox("Keybind para Spinbot", "X", "Digite a tecla", "all", "medium", true, false, function(val)
+    local key = Enum.KeyCode[val:upper()]
+    if key then
+        KeybindSpinbot = key
+        TextboxSpinbotKeybind:SetText(val:upper())
+    end
+end)
+
+-- Slider para configurar a velocidade do spinbot
+local SliderSpinbotSpeed = Tab3:NewSlider("Spinbot Speed", 0, 100, 10, function(value)
+    spinbotSpeed = value
+end)
+
+-- Toggle para bunnyhop
+local ToggleBunnyhop = Tab3:NewToggle("Bunnyhop", false, function(value)
+    toggleBunnyhop(value)
+end)
+
+-- Keybind para ativar/desativar o bunnyhop
+local TextboxBunnyhopKeybind = Tab3:NewTextbox("Keybind para Bunnyhop", "C", "Digite a tecla", "all", "medium", true, false, function(val)
+    local key = Enum.KeyCode[val:upper()]
+    if key then
+        KeybindBunnyhop = key
+        TextboxBunnyhopKeybind:SetText(val:upper())
+    end
+end)
+
+-- Slider para configurar a velocidade do bunnyhop
+local SliderBunnyhopSpeed = Tab3:NewSlider("Bunnyhop Speed", 0, 100, 50, function(value)
+    bunnyhopSpeed = value
+end)
+
 -- Monitorando teclas para ativar/desativar
 local function onKeyPress(input)
     if input.UserInputType == Enum.UserInputType.Keyboard then
@@ -150,12 +223,20 @@ local function onKeyPress(input)
             Toggle1:Set(aimbotActive)
         elseif input.KeyCode == KeybindToggleMenu then
             toggleMenu()
+        elseif input.KeyCode == KeybindSpinbot then
+            toggleSpinbot(not spinbotActive)
+        elseif input.KeyCode == KeybindBunnyhop then
+            toggleBunnyhop(not bunnyhopActive)
         end
     end
 end
 UserInputService.InputBegan:Connect(onKeyPress)
 
--- Atualiza o aimbot
-RunService.RenderStepped:Connect(updateAimbotTarget)
+-- Atualiza o aimbot, spinbot e bunnyhop
+RunService.RenderStepped:Connect(function()
+    updateAimbotTarget()
+    updateSpinbot()
+    updateBunnyhop()
+end)
 
-local FinishedLoading = Notif:Notify("Aimbot Loaded", 4, "success")
+local FinishedLoading = Notif:Notify("Silent Aim Loaded", 4, "success")
