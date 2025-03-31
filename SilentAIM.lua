@@ -58,11 +58,34 @@ end
 
 -- Função para mover a mira suavemente para o alvo
 local function updateAimbotTarget()
-    if aimbotActive and lockedTarget then
-        local targetPos = lockedTarget.Position
-        -- Aplicando a predição ao movimento do alvo
-        targetPos = targetPos + (lockedTarget.Velocity * predictionValue) -- Predição
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPos)
+    if aimbotActive then
+        if lockedTarget and lockedTarget.Parent then
+            -- Verifique se o jogador ainda está no jogo
+            if not lockedTarget.Parent:FindFirstChild("Humanoid") then
+                toggleAimbot(false) -- Desativa o aimbot se o alvo não estiver mais no jogo
+                Toggle1:Set(false)
+                return
+            end
+
+            local targetPos = lockedTarget.Position
+            
+            -- Verifique se o jogador está na primeira pessoa
+            if Camera.CameraType == Enum.CameraType.Scriptable then
+                -- Se estiver na primeira pessoa, use a posição da câmera
+                local cameraPosition = Camera.CFrame.Position
+                targetPos = lockedTarget.Position
+                -- Aplicando a predição ao movimento do alvo
+                targetPos = targetPos + (lockedTarget.Velocity * predictionValue) -- Predição
+                Camera.CFrame = CFrame.new(cameraPosition, targetPos)
+            elseif Camera.CameraType == Enum.CameraType.Custom then
+                -- Se não estiver na primeira pessoa, faz o aimbot normalmente
+                targetPos = targetPos + (lockedTarget.Velocity * predictionValue)
+                Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPos)
+            end
+        else
+            toggleAimbot(false) -- Desativa o aimbot se o alvo sair
+            Toggle1:Set(false)
+        end
     end
 end
 
