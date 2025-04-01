@@ -165,12 +165,28 @@ local ButtonZombie = Tab2:NewButton("Zombie Animation", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/SANTS45x/animation/refs/heads/main/animatio.lua"))()
 end)
 
--- Adicionando um slider para Stretch Resolution
-local SliderStretchResolution = Tab2:NewSlider("Stretch Resolution", 1, 3, 2, function(value)
-    -- Aqui você pode colocar a lógica para ajustar a resolução esticada
-    print("Stretch Resolution set to: " .. value)
+-- Variável para controlar o valor de resolução
+getgenv().Resolution = {
+    [" "] = 0.65 -- Valor inicial para resolução
+}
+
+-- Adicionando o slider para Stretch Resolution
+local SliderStretchResolution = Tab2:NewSlider("Stretch Resolution", 0.5, 1.5, getgenv().Resolution[" "], function(value)
+    -- Atualiza o valor da resolução com base no valor do slider
+    getgenv().Resolution[" "] = value
 end)
 
+-- Código para esticar a resolução
+local Camera = workspace.CurrentCamera
+if getgenv().gg_scripters == nil then
+    game:GetService("RunService").RenderStepped:Connect(
+        function()
+            -- Aplica a transformação na resolução com o valor ajustado
+            Camera.CFrame = Camera.CFrame * CFrame.new(0, 0, 0, 1, 0, 0, 0, getgenv().Resolution[" "], 0, 0, 0, 1)
+        end
+    )
+end
+getgenv().gg_scripters = " " 
 -- Monitorando teclas para ativar/desativar
 local function onKeyPress(input)
     if input.UserInputType == Enum.UserInputType.Keyboard then
