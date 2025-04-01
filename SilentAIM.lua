@@ -165,6 +165,12 @@ local ButtonZombie = Tab2:NewButton("Zombie Animation", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/SANTS45x/animation/refs/heads/main/animatio.lua"))()
 end)
 
+-- Adicionando um slider para Stretch Resolution
+local SliderStretchResolution = Tab2:NewSlider("Stretch Resolution", 1, 3, 2, function(value)
+    -- Aqui você pode colocar a lógica para ajustar a resolução esticada
+    print("Stretch Resolution set to: " .. value)
+end)
+
 -- Monitorando teclas para ativar/desativar
 local function onKeyPress(input)
     if input.UserInputType == Enum.UserInputType.Keyboard then
